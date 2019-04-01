@@ -357,7 +357,7 @@ echo "# OrangePI fstab" > $odir/etc/fstab
 if [ "${_format}" = "btrfs" ] ; then
     echo "/dev/mmcblk0p2  /  btrfs subvolid=0,noatime,nodiratime,compress=lzo  0 1" >> $odir/etc/fstab
 else
-    echo "/dev/mmcblk0p2  /  ext4  errors=remount-ro,noatime,nodiratime  0 1" >> $odir/etc/fstab
+    echo "/dev/mmcblk0p2  /  ${_format}  errors=remount-ro,noatime,nodiratime  0 1" >> $odir/etc/fstab
 fi
 echo "/dev/mmcblk0p1  /media/boot  vfat  defaults  0 0" >> $odir/etc/fstab
 echo "tmpfs /tmp  tmpfs nodev,nosuid,mode=1777  0 0" >> $odir/etc/fstab
@@ -377,7 +377,7 @@ if [ ! "${sdcard}" = "" ]; then
       rmdir $bootdir > /dev/null 2>&1
     fi
     if ! umount -l $odir; then
-	echo "ERROR unmounting ext4 partitions."
+	echo "ERROR unmounting ${_format} partitions."
 	exit 0
     fi
     rm -rf $odir/* > /dev/null 2>&1
@@ -403,7 +403,7 @@ fi
 
 if [ "${_directsd}" = "yes" ] ; then
     if ! umount $odir; then
-	echo "ERROR unmounting ext4 partitions."
+	echo "ERROR unmounting ${_format} partitions."
     fi
 fi
 
