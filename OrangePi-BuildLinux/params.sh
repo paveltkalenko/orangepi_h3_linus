@@ -53,7 +53,7 @@ LANG="ru_RU.UTF-8"
 # IF _format="" partition will NOT be formated        *
 # otherwyse it will be formated with specified format *
 # *****************************************************
-image_name=""
+image_name="orangePI"
 #image_name="minimal"
 #image_name="/dev/sdg"
 

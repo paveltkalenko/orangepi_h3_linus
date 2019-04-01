@@ -194,10 +194,13 @@ fi
 #    echo "deb http://debian.xypron.de/ unstable/armhf/" >> $odir/sources.list
 #fi
 
-
-# ==============================================
-# Make necessary directories and copy some files
-# ==============================================
+echo ""
+echo -e "\033[36m"
+echo "# =============================================="
+echo "# Make necessary directories and copy some files"
+echo "# =============================================="
+echo -e "\033[37m"
+echo ""
 mkdir -p $odir/etc/default > /dev/null 2>&1
 if [ ! "${_boot_on_ext4}" = "yes" ] ; then
     mkdir -p $odir/media/boot
@@ -213,9 +216,13 @@ if [ ! "${ONLY_BASE}" = "yes" ] ; then
     cp wallpaper.png $odir/ > /dev/null 2>&1
 fi
 
-# =====================================================================================
-# Execute debootstram second stage and install base system
-# =====================================================================================
+echo ""
+echo -e "\033[36m"
+echo "# ====================================================================================="
+echo "# Execute debootstram second stage and install base system"
+echo "# ====================================================================================="
+echo -e "\033[37m"
+echo ""
 
 # ********************************************************************************
 # *** If running on ARM (OrangePI) USE THE LINE WITHOUT "qemu-arm-static" !!! ****
@@ -239,12 +246,12 @@ fi
 
 #======================================================================================
 
-rm $odir/_OK_ > /dev/null 2>&1
-rm $odir/second-stage > /dev/null 2>&1
-rm $odir/params.sh > /dev/null 2>&1
-mv $odir/install.log ./install-${distro}.log > /dev/null 2>&1
+rm $odir/_OK_ #> /dev/null 2>&1
+rm $odir/second-stage #> /dev/null 2>&1
+rm $odir/params.sh #> /dev/null 2>&1
+mv $odir/install.log ./install-${distro}.log #> /dev/null 2>&1
 
-# === Copy scripts ========================
+echo "# === Copy scripts ========================"
 cp fs_resize $odir/usr/local/bin
 cp update_boot.sh $odir/usr/local/bin
 cp install_to_emmc $odir/usr/local/bin
