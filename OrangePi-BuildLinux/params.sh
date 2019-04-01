@@ -31,8 +31,8 @@ _timezone="Etc/UTC"
 # SET IF YOU WANT TO INSTALL SPECIFIC LANGUAGE,       *
 # COMMENT FOR DEFAULT (HOST) settings                 *
 # *****************************************************
-LANGUAGE="en"
-LANG="en_US.UTF-8"
+LANGUAGE="ru"
+LANG="ru_RU.UTF-8"
 
 
 # *****************************************************
@@ -66,7 +66,7 @@ image_name=""
 # Used when creating the system directly on SDCard or *
 # SDCard image file and in "image_from_dir" script    *
 # *****************************************************
-_format="ext4"
+_format="ext2"
 #_format="btrfs"
 
 
@@ -90,16 +90,17 @@ linuxsize=800
 
 # === Ubuntu ===
 #distro="precise"
-distro="xenial"
+#distro="xenial"
 #distro="utopic"
 #distro="vivid"
 #distro="wily"
-repo="http://ports.ubuntu.com/ubuntu-ports"
+#repo="http://ports.ubuntu.com/ubuntu-ports"
 
 # === Debian ===
 #distro="wheezy"
 #distro="jessie"
-#repo="http://ftp.hr.debian.org/debian"
+distro="stretch"
+repo="http://mirror.yandex.ru/debian"
 #raspbian="no"
 
 # === Raspbian ===
