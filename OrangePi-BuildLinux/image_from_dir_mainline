@@ -56,9 +56,10 @@ odir="_extdir"
 bootdir="_fatdir"
 
 if [ "${3}" != "noformat" ] ; then
-# =========
+echo "# ========="
+echo "format_mainline.sh started..."
 . format_mainline.sh
-# =========
+echo "# ========="
 fi
 
 # === Show info ===============
@@ -96,9 +97,9 @@ sync
 umount $odir > /dev/null 2>&1
 sleep 1
 
-# ================
-# MOUNT PARTITIONS
-# ================
+echo "# ================"
+echo "# MOUNT PARTITIONS"
+echo "# ================"
 
 if [ "${_format}" = "btrfs" ] ; then             
     _mntopt="-o compress-force=lzo"
@@ -202,7 +203,7 @@ echo "# OrangePI fstab" > $odir/etc/fstab
 if [ "${_format}" = "btrfs" ] ; then
     echo "/dev/mmcblk0p2  /  btrfs subvolid=0,noatime,nodiratime,compress=lzo  0 1" >> $odir/etc/fstab
 else
-    echo "/dev/mmcblk0p2  /  ext4  errors=remount-ro,noatime,nodiratime  0 1" >> $odir/etc/fstab
+    echo "/dev/mmcblk0p2  /  ${_format}  errors=remount-ro,noatime,nodiratime  0 1" >> $odir/etc/fstab
 fi
 echo "/dev/mmcblk0p1  /media/boot  vfat  defaults  0 0" >> $odir/etc/fstab
 echo "tmpfs /tmp  tmpfs nodev,nosuid,mode=1777  0 0" >> $odir/etc/fstab

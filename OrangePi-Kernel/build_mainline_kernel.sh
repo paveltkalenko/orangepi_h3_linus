@@ -115,6 +115,8 @@ cp ../build/rootfs-lobo.img.gz output/rootfs.cpio.gz
         cp arch/arm/boot/dts/sun8i-h3-orangepi-pc.dtb output/
 		cd ..
     	cd $LINKERNEL_DIR
+		ls output -l
+		echo "Now copy uImage to build/lib"
     	cp output/uImage ../build/lib/uImage
     	[ ! -d ../build/lib ] && mkdir ../build/lib
     	rm -rf ../build/lib/*
