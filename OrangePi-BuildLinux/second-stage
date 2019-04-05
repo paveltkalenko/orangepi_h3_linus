@@ -350,7 +350,7 @@ else
     # ** INSTALL more usefull packages ....
     # apt-get -y install wireless-tools wpasupplicant axel build-essential git whiptail unzip
     echo "Installing more packages..."
-    apt-get ${_apt} install nano mc htop man-db tmux dbus btrfs-tools net-tools ethtool uuid iw lshw network-manager rsync usbutils hdparm i2c-tools parted dosfstools --no-install-recommends >> $_LOGFILE 2>&1 &
+    apt-get ${_apt} install nano mc htop man-db tmux dbus btrfs-tools net-tools ethtool uuid iw lshw network-manager rsync usbutils hdparm i2c-tools parted dosfstools systemd-sysv --no-install-recommends >> $_LOGFILE 2>&1 &
     pid=$!
     proc_wait $pid "please wait"
     apt-get clean >> $_LOGFILE 2>&1
