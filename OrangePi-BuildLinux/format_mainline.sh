@@ -175,10 +175,10 @@ if [ ! "${sdcard}" = "" ]; then
                 exit 1
             fi
         else
-            echo "Formating linux partition (ext4), please wait ..."
-            mkfs -F -t ext4 -L linux ${sdcard}2 > /dev/null 2>&1
+            echo "Formating linux partition (${_format}), please wait ..."
+            mkfs -F -t ${_format} -L linux ${sdcard}2 > /dev/null 2>&1
             if [ $? -ne 0 ]; then
-                echo "ERROR formating ext4 partition."
+                echo "ERROR formating ${_format} partition."
                 exit 1
             fi
         fi
@@ -193,10 +193,10 @@ if [ ! "${sdcard}" = "" ]; then
                 exit 1
             fi
         else
-            echo "Formating linux partition (ext4), please wait ..."
-            mkfs -F -t ext4 -L linux ${sdcard}1 > /dev/null 2>&1
+            echo "Formating linux partition (${_format}), please wait ..."
+            mkfs -F -t ${_format} -L linux ${sdcard}1 > /dev/null 2>&1
             if [ $? -ne 0 ]; then
-                echo "ERROR formating ext4 partition."
+                echo "ERROR formating ${_format} partition."
                 exit 0
             fi
         fi

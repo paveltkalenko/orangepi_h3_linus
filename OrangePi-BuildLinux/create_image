@@ -70,7 +70,7 @@ else
 fi
 
 # ===================
-. format.sh
+. format_mainline.sh
 # ===================
 
 if [ "${odir}" = "" ] || [ "${bootdir}" = "" ]; then
