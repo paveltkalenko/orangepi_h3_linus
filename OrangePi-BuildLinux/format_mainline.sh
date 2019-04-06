@@ -49,18 +49,15 @@ else
     # ==========================
 fi
 
+
+
 if [ ! "${sdcard}" = "" ]; then
 
     if [ ! "${_directsd}" = "yes" ] ; then
     echo "Using disk image \"$sdcard\""
     fi
-    if [ ! -f orange/boot0_OPI.fex ]; then
-    echo "Error: orange/boot0_OPI.fex not found."
-    exit 1
-    fi
-
-    if [ ! -f orange/u-boot_OPI.fex ]; then
-    echo "Error: orange/u-boot_OPI.fex not found."
+    if [ ! -f orange/u-boot-sunxi-with-spl.bin ]; then
+    echo "Error: orange/u-boot-sunxi-with-spl.bin not found."
     exit 1
     fi
 

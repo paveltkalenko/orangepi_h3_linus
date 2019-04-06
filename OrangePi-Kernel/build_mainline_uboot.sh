@@ -30,6 +30,11 @@ date
 echo "build u-boot,please wait ..." && make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabi-
 date
 
+# Проверка на существование папки
+if ! [ -d ../build/uboot ]; then
+	mkdir ../build/uboot
+fi
+
 cd ../build/uboot
 if [ -f u-boot-sunxi-with-spl.bin ]; then
 	rm -rf u-boot-sunxi-with-spl.bin
@@ -42,18 +47,16 @@ fi
 	echo "**********Compile uboot OK**************"
 
 
-sed -i '/sun8i-h3/d' orangepi.cmd
-linenum=`grep -n "uImage" orangepi.cmd | awk '{print $1}' | awk -F: '{print $1}'`
-sed -i "${linenum}i fatload mmc 0 0x46000000 ${dts}" orangepi.cmd
-sudo chmod +x orangepi.cmd u-boot-sunxi-with-spl.bin
+# sed -i '/sun8i-h3/d' orangepi.cmd
+# linenum=`grep -n "uImage" orangepi.cmd | awk '{print $1}' | awk -F: '{print $1}'`
+# sed -i "${linenum}i fatload mmc 0 0x46000000 ${dts}" orangepi.cmd
+# sudo chmod +x orangepi.cmd u-boot-sunxi-with-spl.bin
+cp ../../orangepi.cmd ./
 mkimage -C none -A arm -T script -d orangepi.cmd boot.scr
 
 cp -rf u-boot-sunxi-with-spl.bin ../../../OrangePi-BuildLinux/orange
-
 cp -rf boot.scr orangepi.cmd ../../../
 cd ../../../
 mv  boot.scr orangepi.cmd ./OrangePi-BuildLinux/orange
-
-
 
 

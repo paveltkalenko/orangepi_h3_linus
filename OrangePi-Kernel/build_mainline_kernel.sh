@@ -117,9 +117,18 @@ cp ../build/rootfs-lobo.img.gz output/rootfs.cpio.gz
     	cd $LINKERNEL_DIR
 		ls output -l
 		echo "Now copy uImage to build/lib"
-    	cp output/uImage ../build/lib/uImage
-    	[ ! -d ../build/lib ] && mkdir ../build/lib
-    	rm -rf ../build/lib/*
+		if ! [ -d ../build/lib ]
+		then
+			echo "Directory build/lib doesn't exist "
+			echo "Mkdir build/lib"
+			mkdir ../build/lib
+		else
+			echo "remove files in build/lib"
+			rm -rf ../build/lib/*
+		fi
+		echo "copy file uImage from output to build"
+    	cp output/uImage ../build/uImage
+		
     	cp -R output/lib/* ../build/lib
         cp output/sun8i-h3-orangepi-one.dtb ../build/lib
         cp output/sun8i-h3-orangepi-lite.dtb ../build/lib
@@ -129,9 +138,20 @@ cp ../build/rootfs-lobo.img.gz output/rootfs.cpio.gz
         cp output/sun8i-h3-orangepi-pc-plus.dtb ../build/lib
         cp output/sun8i-h3-orangepi-pc.dtb ../build/lib
         
+		if ! [ -d ../../OrangePi-BuildLinux/orange/lib/ ]
+		then
+			echo "Directory does't but we create "
+			mkdir ../../OrangePi-BuildLinux/orange/lib/
+		fi
+		cd ..
+		echo "Remove all files in OrangePi-BuildLinux/orange/lib/ and copy new files from build/lib"
+		rm -rf ../OrangePi-BuildLinux/orange/lib/* 
+		cp -rf build/lib/* ../OrangePi-BuildLinux/orange/lib/
 
-		rm -rf ../../OrangePi-BuildLinux/orange/lib/* 
-		cp -rf ../build/lib/* ../../OrangePi-BuildLinux/orange/lib/
+		echo "Copy uImage to orange"
+		rm -rf ../OrangePi-BuildLinux/orange/uImage
+		cp -rf build/uImage ../OrangePi-BuildLinux/orange/uImage
+
 	fi
 #==================================================================================
 

@@ -4,12 +4,17 @@
 # *****************************************************
 # !! REMEMBER TO SET PARAMETERS IN FILE "second-stage *
 # *****************************************************
-
+_LOGFILE="create_image.log"
 if [ "$(id -u)" != "0" ]; then
    echo "Script must be run as root !"
    exit 0
 fi
 
+rm $_LOGFILE
+touch $_LOGFILE
+#если возникнут ошибки прерываемся
+# set -e
+echo "Start logfile good" >> $_LOGFILE
 echo ""
 date
 echo -e "\033[36m======================================================="
@@ -70,6 +75,7 @@ else
 fi
 
 # ===================
+echo "running format_mainline.sh"
 . format_mainline.sh
 # ===================
 
@@ -79,26 +85,26 @@ if [ "${odir}" = "" ] || [ "${bootdir}" = "" ]; then
 fi
 
 
-# ===================
-# Prepare directories
-# ===================
+echo "# ==================="
+echo "# Prepare directories"
+echo "# ==================="
 if [ ! "${_boot_on_ext4}" = "yes" ] ; then
     if [ ! -d $bootdir ]; then
 	mkdir -p $bootdir
     fi
-    rm $bootdir/* > /dev/null 2>&1
+    rm $bootdir/* >> $_LOGFILE 2>&1
     sync
-    umount $bootdir > /dev/null 2>&1
+    umount $bootdir >> $_LOGFILE 2>&1
 fi
 
 
 if [ ! -d $odir ]; then
     mkdir -p $odir
 fi
-rm -rf $odir/* > /dev/null 2>&1
+rm -rf $odir/* >> $_LOGFILE 2>&1
 sync
 
-umount $odir > /dev/null 2>&1
+umount $odir >> $_LOGFILE 2>&1
 sleep 1
 
 # ===========================================
@@ -141,9 +147,9 @@ touch $odir/_$distro
 
 echo "DEBOOTSTRAP, FIRST STAGE"
 if [ "${raspbian}" = "yes" ] ; then
-  debootstrap --arch armhf --foreign --no-check-gpg --include=ca-certificates --verbose --include=wget ${distro} $odir $repo > /dev/null 2>&1 &
+  debootstrap --arch armhf --foreign --no-check-gpg --include=ca-certificates --verbose --include=wget ${distro} $odir $repo >> $_LOGFILE 2>&1 &
 else
-  debootstrap --arch armhf --foreign --verbose --variant=minbase --include=wget ${distro} $odir $repo > /dev/null 2>&1 &
+  debootstrap --arch armhf --foreign --verbose --variant=minbase --include=wget ${distro} $odir $repo >> $_LOGFILE 2>&1 &
 fi
 pid=$!
 proc_wait $pid "please wait"
@@ -201,19 +207,19 @@ echo "# Make necessary directories and copy some files"
 echo "# =============================================="
 echo -e "\033[37m"
 echo ""
-mkdir -p $odir/etc/default > /dev/null 2>&1
+mkdir -p $odir/etc/default >> $_LOGFILE 2>&1
 if [ ! "${_boot_on_ext4}" = "yes" ] ; then
     mkdir -p $odir/media/boot
 fi
 mkdir -p $odir/usr/local/bin
-mkdir -p $odir/usr/bin > /dev/null 2>&1
+mkdir -p $odir/usr/bin >> $_LOGFILE 2>&1
 
 cp /etc/timezone $odir/etc
 cp /usr/bin/qemu-arm-static $odir/usr/bin
 cp second-stage $odir/second-stage
 cp params.sh $odir/params.sh
 if [ ! "${ONLY_BASE}" = "yes" ] ; then
-    cp wallpaper.png $odir/ > /dev/null 2>&1
+    cp wallpaper.png $odir/ >> $_LOGFILE 2>&1
 fi
 
 echo ""
@@ -229,7 +235,7 @@ echo ""
 # ********************************************************************************
 #if ! chroot $odir /bin/bash /second-stage; then
 if ! chroot $odir /usr/bin/qemu-arm-static -cpu cortex-a9 /bin/bash /second-stage; then
-    mv $odir/install.log . > /dev/null 2>&1
+    mv $odir/install.log . >> $_LOGFILE 2>&1
     echo "================================================"
     echo "ERROR on second-stage, instalation NOT FINISHED."
     echo "================================================"
@@ -237,7 +243,7 @@ if ! chroot $odir /usr/bin/qemu-arm-static -cpu cortex-a9 /bin/bash /second-stag
 fi
 
 if [ ! -f $odir/_OK_ ]; then
-    mv $odir/install.log . > /dev/null 2>&1
+    mv $odir/install.log . >> $_LOGFILE 2>&1
     echo "================================================"
     echo "ERROR on second-stage, instalation NOT FINISHED."
     echo "================================================"
@@ -246,10 +252,10 @@ fi
 
 #======================================================================================
 
-rm $odir/_OK_ #> /dev/null 2>&1
-rm $odir/second-stage #> /dev/null 2>&1
-rm $odir/params.sh #> /dev/null 2>&1
-mv $odir/install.log ./install-${distro}.log #> /dev/null 2>&1
+rm $odir/_OK_ #>> $_LOGFILE 2>&1
+rm $odir/second-stage #>> $_LOGFILE 2>&1
+rm $odir/params.sh #>> $_LOGFILE 2>&1
+mv $odir/install.log ./install-${distro}.log #>> $_LOGFILE 2>&1
 
 echo "# === Copy scripts ========================"
 cp fs_resize $odir/usr/local/bin
@@ -262,92 +268,111 @@ if [ ! "${ONLY_BASE}" = "yes" ] ; then
 fi
 # =========================================
 
-# === Copy kernel, modules & scripts =============================================
-mkdir -p $odir/boot > /dev/null 2>&1
-mkdir -p $odir/boot > /dev/null 2>&1
-mkdir -p $odir/boot > /dev/null 2>&1
+echo "# === Copy kernel, modules & scripts ============================================="
+echo "# +++ Copy kernel, modeles & scripts" >> $_LOGFILE
+mkdir -p $odir/boot >> $_LOGFILE 2>&1
 
-rm -r $odir/boot/* > /dev/null 2>&1
-cp orange/uImage_OPI* $odir/boot > /dev/null 2>&1
-cp orange/boot0_OPI.fex $odir/boot > /dev/null 2>&1
-cp orange/u-boot_OPI*.fex $odir/boot > /dev/null 2>&1
-cp install_* $odir/usr/local/bin > /dev/null 2>&1
-cp fs_resize $odir/usr/local/bin > /dev/null 2>&1
+rm -r $odir/boot/* >> $_LOGFILE 2>&1
+cp orange/uImage_OPI* $odir/boot >> $_LOGFILE 2>&1
 
-if [ "${3}" = "opi-2" ] || [ "${4}" = "opi-2" ]; then
-    cp orange/uImage_OPI-2 $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-2_* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-2 $bootdir/uImage > /dev/null 2>&1
-        cp orange/script.bin.OPI-2_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
-        cp orange/script.bin.OPI-2_* $bootdir > /dev/null 2>&1
-    fi
-elif [ "${3}" = "opi-pc" ] || [ "${4}" = "opi-pc" ]; then
-    cp orange/uImage_OPI-2 $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-PC_* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-2 $bootdir/uImage > /dev/null 2>&1
-        cp orange/script.bin.OPI-PC_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
-        cp orange/script.bin.OPI-PC_* $bootdir > /dev/null 2>&1
-    fi
-elif [ "${3}" = "opi-plus" ] || [ "${4}" = "opi-plus" ]; then
-    cp orange/uImage_OPI-PLUS $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-PLUS_* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-PLUS $bootdir/uImage > /dev/null 2>&1
-        cp orange/script.bin.OPI-PLUS_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
-        cp orange/script.bin.OPI-PLUS_* $bootdir > /dev/null 2>&1
-    fi
-elif [ "${3}" = "opi-one" ] || [ "${4}" = "opi-one" ]; then
-    cp orange/uImage_OPI-2 $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-ONE_* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-2 $bootdir/uImage > /dev/null 2>&1
-        cp orange/script.bin.OPI-PC_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
-    fi
-elif [ "${3}" = "opi-lite" ] || [ "${4}" = "opi-lite" ]; then
-    cp orange/uImage_OPI-2 $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-LITE_* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-2 $bootdir/uImage > /dev/null 2>&1
-        cp orange/script.bin.OPI-LITE_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
-        sed -i '/8189es/c8189fs'  $odir/etc/modules 
-    fi
-elif [ "${3}" = "opi-pcplus" ] || [ "${4}" = "opi-pcplus" ]; then
-    cp orange/uImage_OPI-2 $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-PCPLUS_* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-2 $bootdir/uImage > /dev/null 2>&1
-        cp orange/script.bin.OPI-PCPLUS_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
-        sed -i '/8189es/c8189fs'  $odir/etc/modules 
-    fi
-elif [ "${3}" = "opi-plus2e" ] || [ "${4}" = "opi-plus2e" ]; then
-    cp orange/uImage_OPI-PLUS $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-PLUS2E_* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-PLUS $bootdir/uImage > /dev/null 2>&1
-        cp orange/script.bin.OPI-PLUS2E_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
-        sed -i '/8189es/c8189fs'  $odir/etc/modules 
-    fi
+cp install_* $odir/usr/local/bin >> $_LOGFILE 2>&1
+cp fs_resize $odir/usr/local/bin >> $_LOGFILE 2>&1
+
+echo "if board opi-pc then"
+
+if [ "${_board}" = "opi-pc" ] 
+then
+    echo "copy orange/uImage"
+        cp orange/uImage $odir/boot/uImage >> $_LOGFILE 2>&1
+        # cp orange/script.bin.OPI-* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/boot.scr $bootdir/boot.scr >> $_LOGFILE 2>&1
+            cp orange/lib/sun8i-h3-orangepi-pc.dtb \
+                $bootdir/sun8i-h3-orangepi-pc.dtb >> $_LOGFILE 2>&1
+            # cp orange/uImage_OPI* $bootdir >> $_LOGFILE 2>&1
+            # cp orange/script.bin.OPI-* $bootdir >> $_LOGFILE 2>&1
+            # cp orange/script.bin.OPI-2_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+        fi
 else
-    cp orange/uImage_OPI-2 $odir/boot/uImage > /dev/null 2>&1
-    cp orange/script.bin.OPI-* $odir/boot > /dev/null 2>&1
-    if [ ! "${_boot_on_ext4}" = "yes" ] ; then
-        cp orange/uImage_OPI-2 $bootdir/uImage > /dev/null 2>&1
-        cp orange/uImage_OPI* $bootdir > /dev/null 2>&1
-        cp orange/script.bin.OPI-* $bootdir > /dev/null 2>&1
-        cp orange/script.bin.OPI-2_720p60_hdmi $bootdir/script.bin > /dev/null 2>&1
+    if [ "${3}" = "opi-2" ] || [ "${4}" = "opi-2" ]; then
+        cp orange/uImage_OPI-2 $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-2_* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-2 $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-2_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-2_* $bootdir >> $_LOGFILE 2>&1
+        fi
+    elif [ "${3}" = "opi-pc" ] || [ "${4}" = "opi-pc" ]; then
+        cp orange/uImage_OPI-2 $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-PC_* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-2 $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-PC_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-PC_* $bootdir >> $_LOGFILE 2>&1
+        fi
+    elif [ "${3}" = "opi-plus" ] || [ "${4}" = "opi-plus" ]; then
+        cp orange/uImage_OPI-PLUS $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-PLUS_* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-PLUS $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-PLUS_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-PLUS_* $bootdir >> $_LOGFILE 2>&1
+        fi
+    elif [ "${3}" = "opi-one" ] || [ "${4}" = "opi-one" ]; then
+        cp orange/uImage_OPI-2 $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-ONE_* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-2 $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-PC_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+        fi
+    elif [ "${3}" = "opi-lite" ] || [ "${4}" = "opi-lite" ]; then
+        cp orange/uImage_OPI-2 $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-LITE_* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-2 $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-LITE_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+            sed -i '/8189es/c8189fs'  $odir/etc/modules 
+        fi
+    elif [ "${3}" = "opi-pcplus" ] || [ "${4}" = "opi-pcplus" ]; then
+        cp orange/uImage_OPI-2 $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-PCPLUS_* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-2 $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-PCPLUS_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+            sed -i '/8189es/c8189fs'  $odir/etc/modules 
+        fi
+    elif [ "${3}" = "opi-plus2e" ] || [ "${4}" = "opi-plus2e" ]; then
+        cp orange/uImage_OPI-PLUS $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-PLUS2E_* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-PLUS $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-PLUS2E_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+            sed -i '/8189es/c8189fs'  $odir/etc/modules 
+        fi
+    else
+        cp orange/uImage_OPI-2 $odir/boot/uImage >> $_LOGFILE 2>&1
+        cp orange/script.bin.OPI-* $odir/boot >> $_LOGFILE 2>&1
+        if [ ! "${_boot_on_ext4}" = "yes" ] ; then
+            cp orange/uImage_OPI-2 $bootdir/uImage >> $_LOGFILE 2>&1
+            cp orange/uImage_OPI* $bootdir >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-* $bootdir >> $_LOGFILE 2>&1
+            cp orange/script.bin.OPI-2_720p60_hdmi $bootdir/script.bin >> $_LOGFILE 2>&1
+        fi
     fi
 fi
+echo "copy modules and firmware to $odir/lib"
+cp -rf orange/lib/modules $odir/lib >> $_LOGFILE 2>&1
+cp -rf orange/lib/firmware $odir/lib >> $_LOGFILE 2>&1
 
-cp -rf orange/lib/modules $odir/lib > /dev/null 2>&1
-cp -rf orange/lib/firmware $odir/lib > /dev/null 2>&1
-chown -R root:root $odir/lib/* > /dev/null 2>&1
+echo "change own $odir/lib"
+chown -R root:root $odir/lib/* >> $_LOGFILE 2>&1
 
 # ================================================================================
-
+echo "sync"
 sync
 
+echo "remove files in dev, proc, run, sys, tmp"
 rm -rf $odir/dev/*
 rm -rf $odir/proc/*
 rm -rf $odir/run/*
@@ -356,9 +381,9 @@ rm -rf $odir/tmp/*
 
 echo ""
 
-# ***************
-# Create fstab
-# ***************
+echo "# ***************"
+echo "# Create fstab"
+echo "# ***************"
 echo "Creating \"fstab\""
 echo "# OrangePI fstab" > $odir/etc/fstab
 if [ "${_format}" = "btrfs" ] ; then
@@ -380,24 +405,24 @@ if [ ! "${sdcard}" = "" ]; then
 	  echo "ERROR unmounting fat partition."
 	  exit 0
       fi
-      rm -rf $bootdir/* > /dev/null 2>&1
-      rmdir $bootdir > /dev/null 2>&1
+      rm -rf $bootdir/* >> $_LOGFILE 2>&1
+      rmdir $bootdir >> $_LOGFILE 2>&1
     fi
     if ! umount -l $odir; then
 	echo "ERROR unmounting ${_format} partitions."
 	exit 0
     fi
-    rm -rf $odir/* > /dev/null 2>&1
-    rmdir $odir > /dev/null 2>&1
+    rm -rf $odir/* >> $_LOGFILE 2>&1
+    rmdir $odir >> $_LOGFILE 2>&1
     sync
 
     echo "Creating SDCard image..."
-    dd if=${sdcard}u of=${sdcard} > /dev/null 2>&1
+    dd if=${sdcard}u of=${sdcard} >> $_LOGFILE 2>&1
     if [ -f ${sdcard}1 ]; then
-        dd if=${sdcard}1 of=${sdcard} bs=1M conv=notrunc oflag=append > /dev/null 2>&1
+        dd if=${sdcard}1 of=${sdcard} bs=1M conv=notrunc oflag=append >> $_LOGFILE 2>&1
     fi
     if [ -f ${sdcard}2 ]; then
-        dd if=${sdcard}2 of=${sdcard} bs=1M conv=notrunc oflag=append > /dev/null 2>&1
+        dd if=${sdcard}2 of=${sdcard} bs=1M conv=notrunc oflag=append >> $_LOGFILE 2>&1
     fi
 
     if [ "${_compress}" = "yes" ]; then
