@@ -1,3 +1,4 @@
 /linux-4.9/output
 /build/lib
-/build/*
+/build
+/testgitignore

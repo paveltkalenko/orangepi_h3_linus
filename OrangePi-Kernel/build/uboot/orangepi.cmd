@@ -1,9 +1,17 @@
-#gpio set PL10
+gpio set PL10
 gpio set PA15
 setenv machid 1029
 setenv bootm_boot_mode sec
 setenv bootargs "console=ttyS0,115200 console=tty1 root=/dev/mmcblk0p2 init=/sbin/init rootwait rootfstype=ext4 panic=10 consoleblank=0 enforcing=0 loglevel=7"
 
+sleep 5
+
+gpio clear PA15
+sleep 1
+gpio clear PL10
+sleep 10
+gpio set PA15
+sleep 10
 
 fatload mmc 0 0x46000000 sun8i-h3-orangepi-pc.dtb
 fatload mmc 0 0x48000000 uImage
