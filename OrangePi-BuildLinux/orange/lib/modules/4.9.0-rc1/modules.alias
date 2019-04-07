@@ -1,6 +1,4 @@
 # Aliases extracted from modules themselves.
-alias fs-vfat vfat
-alias fs-msdos msdos
 alias iso9660 isofs
 alias fs-iso9660 isofs
 alias devname:fuse fuse

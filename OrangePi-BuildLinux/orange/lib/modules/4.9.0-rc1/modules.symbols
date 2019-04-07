@@ -1,12 +1,10 @@
 # Aliases for symbols, used by symbol_request().
 alias symbol:snd_dmaengine_pcm_get_chan snd_pcm_dmaengine
-alias symbol:fat_build_inode fat
 alias symbol:_rtl92c_phy_bb8192c_config_parafile rtl8192c_common
 alias symbol:ieee80211_stop_rx_ba_session_offl mac80211
 alias symbol:ieee80211_remain_on_channel_expired mac80211
 alias symbol:snd_soc_of_get_dai_link_codecs snd_soc_core
 alias symbol:snd_soc_get_volsw_sx snd_soc_core
-alias symbol:fat_dir_empty fat
 alias symbol:rtl_phy_scan_operation_backup rtlwifi
 alias symbol:bcma_chipco_b_mii_write bcma
 alias symbol:snd_soc_info_xr_sx snd_soc_core
@@ -15,7 +13,6 @@ alias symbol:bcma_find_core_unit bcma
 alias symbol:genphy_read_status libphy
 alias symbol:of_phy_get_and_connect of_mdio
 alias symbol:phy_get_eee_err libphy
-alias symbol:fat_free_clusters fat
 alias symbol:rtl_efuse_shadow_map_update rtlwifi
 alias symbol:ieee80211_chswitch_done mac80211
 alias symbol:snd_soc_bytes_tlv_callback snd_soc_core
@@ -71,7 +68,6 @@ alias symbol:snd_soc_read snd_soc_core
 alias symbol:snd_soc_dai_set_fmt snd_soc_core
 alias symbol:genphy_soft_reset libphy
 alias symbol:ieee80211_csa_is_complete mac80211
-alias symbol:fat_detach fat
 alias symbol:bcma_core_disable bcma
 alias symbol:devm_snd_soc_register_card snd_soc_core
 alias symbol:devm_mdiobus_free libphy
@@ -85,7 +81,6 @@ alias symbol:snd_dmaengine_pcm_pointer_no_residue snd_pcm_dmaengine
 alias symbol:snd_soc_dapm_del_routes snd_soc_core
 alias symbol:usb_serial_generic_submit_read_urbs usbserial
 alias symbol:ieee80211_gtk_rekey_notify mac80211
-alias symbol:fat_getattr fat
 alias symbol:snd_soc_dapm_new_controls snd_soc_core
 alias symbol:snd_soc_dapm_ignore_suspend snd_soc_core
 alias symbol:rtl_wowlan_fw_cb rtlwifi
@@ -100,7 +95,6 @@ alias symbol:snd_soc_unregister_card snd_soc_core
 alias symbol:ieee80211_csa_finish mac80211
 alias symbol:mdio_driver_register libphy
 alias symbol:dfs_pattern_detector_init ath
-alias symbol:fat_flush_inodes fat
 alias symbol:rtl_deinit_deferred_work rtlwifi
 alias symbol:ssb_pmu_set_ldo_paref ssb
 alias symbol:ieee80211_radar_detected mac80211
@@ -291,7 +285,6 @@ alias symbol:mdio_device_register libphy
 alias symbol:rtl_action_proc rtlwifi
 alias symbol:snd_soc_dapm_get_volsw snd_soc_core
 alias symbol:phy_ethtool_sset libphy
-alias symbol:fat_search_long fat
 alias symbol:fixed_phy_add fixed_phy
 alias symbol:rtw_set_gpio_output_value 8189es
 alias symbol:sunxi_rsb_driver_register sunxi_rsb
@@ -303,7 +296,6 @@ alias symbol:rtl92c_phy_set_txpower_level rtl8192c_common
 alias symbol:rtl92c_dm_rf_saving rtl8192c_common
 alias symbol:_rtl92c_phy_dbm_to_txpwr_idx rtl8192c_common
 alias symbol:snd_soc_dapm_disable_pin snd_soc_core
-alias symbol:fat_sync_inode fat
 alias symbol:ohci_resume ohci_hcd
 alias symbol:rtl92c_phy_set_io rtl8192c_common
 alias symbol:mii_ethtool_sset mii
@@ -312,7 +304,6 @@ alias symbol:snd_pcm_format_little_endian snd_pcm
 alias symbol:ieee80211_ctstoself_get mac80211
 alias symbol:snd_pcm_set_sync snd_pcm
 alias symbol:rtl_bb_delay rtlwifi
-alias symbol:fat_time_unix2fat fat
 alias symbol:snd_soc_pm_ops snd_soc_core
 alias symbol:usb_serial_generic_close usbserial
 alias symbol:__ieee80211_create_tpt_led_trigger mac80211
@@ -332,7 +323,6 @@ alias symbol:snd_soc_put_xr_sx snd_soc_core
 alias symbol:dapm_mark_endpoints_dirty snd_soc_core
 alias symbol:phy_ethtool_get_wol libphy
 alias symbol:snd_soc_write snd_soc_core
-alias symbol:fat_attach fat
 alias symbol:_snd_pcm_hw_params_any snd_pcm
 alias symbol:devm_snd_soc_register_platform snd_soc_core
 alias symbol:hwrng_unregister rng_core
@@ -357,7 +347,6 @@ alias symbol:of_phy_register_fixed_link of_mdio
 alias symbol:snd_soc_dapm_nc_pin_unlocked snd_soc_core
 alias symbol:bcma_core_is_enabled bcma
 alias symbol:rtl_process_phyinfo rtlwifi
-alias symbol:fat_get_dotdot_entry fat
 alias symbol:cdrom_release cdrom
 alias symbol:ieee80211_alloc_hw_nm mac80211
 alias symbol:ieee80211_beacon_get_tim mac80211
@@ -384,7 +373,6 @@ alias symbol:ieee80211_probereq_get mac80211
 alias symbol:ieee80211_sta_block_awake mac80211
 alias symbol:snd_pcm_rate_range_to_bits snd_pcm
 alias symbol:of_phy_find_device of_mdio
-alias symbol:fat_fill_super fat
 alias symbol:ieee80211_stop_queues mac80211
 alias symbol:channel5g rtlwifi
 alias symbol:rtw_config_gpio 8189es
@@ -463,7 +451,6 @@ alias symbol:snd_pcm_lib_get_vmalloc_page snd_pcm
 alias symbol:snd_pcm_suspend snd_pcm
 alias symbol:snd_pcm_format_unsigned snd_pcm
 alias symbol:snd_soc_dpcm_fe_can_update snd_soc_core
-alias symbol:fat_setattr fat
 alias symbol:ieee80211_tx_status_noskb mac80211
 alias symbol:mii_link_ok mii
 alias symbol:rtl_p2p_info rtlwifi
@@ -505,7 +492,6 @@ alias symbol:snd_seq_delete_kernel_client snd_seq
 alias symbol:snd_soc_dapm_disable_pin_unlocked snd_soc_core
 alias symbol:snd_soc_unregister_codec snd_soc_core
 alias symbol:genphy_setup_forced libphy
-alias symbol:fat_scan fat
 alias symbol:snd_pcm_hw_constraint_ratdens snd_pcm
 alias symbol:ieee80211_update_p2p_noa mac80211
 alias symbol:snd_seq_autoload_init snd_seq_device
@@ -538,7 +524,6 @@ alias symbol:phy_ethtool_get_eee libphy
 alias symbol:_rtl92c_store_pwrIndex_diffrate_offset rtl8192c_common
 alias symbol:snd_pcm_hw_rule_add snd_pcm
 alias symbol:snd_soc_dpcm_can_be_free_stop snd_soc_core
-alias symbol:fat_add_entries fat
 alias symbol:ieee80211_start_tx_ba_cb_irqsafe mac80211
 alias symbol:__ssb_driver_register ssb
 alias symbol:mdio_driver_unregister libphy
@@ -590,11 +575,9 @@ alias symbol:snd_soc_remove_dai_link snd_soc_core
 alias symbol:snd_pcm_rate_to_rate_bit snd_pcm
 alias symbol:sunxi_hdmi_codec_unregister snd_soc_sunxi_hdmi
 alias symbol:snd_pcm_lib_free_vmalloc_buffer snd_pcm
-alias symbol:__fat_fs_error fat
 alias symbol:phy_stop libphy
 alias symbol:snd_seq_kernel_client_dispatch snd_seq
 alias symbol:phy_print_status libphy
-alias symbol:fat_alloc_new_dir fat
 alias symbol:snd_soc_jack_add_gpios snd_soc_core
 alias symbol:rtl_send_smps_action rtlwifi
 alias symbol:snd_soc_find_dai snd_soc_core
@@ -628,7 +611,6 @@ alias symbol:snd_timer_continue snd_timer
 alias symbol:rtl_fw_cb rtlwifi
 alias symbol:snd_soc_add_dai_link snd_soc_core
 alias symbol:bcma_chipco_pll_maskset bcma
-alias symbol:fat_remove_entries fat
 alias symbol:gf128mul_bbe gf128mul
 alias symbol:phy_device_remove libphy
 alias symbol:snd_dmaengine_pcm_prepare_slave_config snd_soc_core
