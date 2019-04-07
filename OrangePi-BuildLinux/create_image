@@ -218,6 +218,7 @@ cp /etc/timezone $odir/etc
 cp /usr/bin/qemu-arm-static $odir/usr/bin
 cp second-stage $odir/second-stage
 cp params.sh $odir/params.sh
+cp pkglist $odir/pkglist
 if [ ! "${ONLY_BASE}" = "yes" ] ; then
     cp wallpaper.png $odir/ >> $_LOGFILE 2>&1
 fi
@@ -255,6 +256,7 @@ fi
 rm $odir/_OK_ #>> $_LOGFILE 2>&1
 rm $odir/second-stage #>> $_LOGFILE 2>&1
 rm $odir/params.sh #>> $_LOGFILE 2>&1
+rm $odir/pkglist
 mv $odir/install.log ./install-${distro}.log #>> $_LOGFILE 2>&1
 
 echo "# === Copy scripts ========================"

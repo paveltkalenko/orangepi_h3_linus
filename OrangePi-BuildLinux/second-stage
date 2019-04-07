@@ -318,39 +318,47 @@ echo ""
 #    proc_wait $pid "please wait"
 #    apt-get clean >> $_LOGFILE 2>&1
 #fi
-
-
-if [ "${ONLY_BASE}" = "yes" ] ; then
-    echo "Installing base packages..."
-    apt-get ${_apt} install sudo isc-dhcp-client netbase ifupdown iproute network-manager --no-install-recommends >> $_LOGFILE 2>&1 &
+if [ "${distro}" = "stretch" ]
+then
+    echo "Installing systemd-sysv for Debian stretch..." | tee -a $_LOGFILE
+    apt-get ${_apt} install systemd-sysv kmod >> $_LOGFILE 2>&1 &
     pid=$!
-    proc_wait $pid "please be patient"
+    proc_wait $pid "please wait"
     apt-get clean >> $_LOGFILE 2>&1
+fi
+
+echo "Installing base packages..." | tee -a $_LOGFILE
+apt-get ${_apt} install sudo isc-dhcp-client netbase ifupdown iproute network-manager --no-install-recommends >> $_LOGFILE 2>&1 &
+pid=$!
+proc_wait $pid "please be patient"
+apt-get clean >> $_LOGFILE 2>&1
     
-else
-    echo "Installing base packages..."
-    apt-get ${_apt} install udev apt-utils locales dialog sudo isc-dhcp-client netbase ifupdown iproute openssh-server iputils-ping wget curl ntpdate ntp less tzdata console-common module-init-tools u-boot-tools initramfs-tools keyboard-configuration console-setup xz-utils fbset --no-install-recommends >> $_LOGFILE 2>&1 &
+if [ ! "${ONLY_BASE}" = "yes" ] ; then
+    echo "Installing packages other" | tee -a $_LOGFILE
+    apt-get ${_apt} install udev apt-utils locales dialog openssh-server iputils-ping wget curl ntpdate ntp less tzdata console-common u-boot-tools initramfs-tools keyboard-configuration console-setup xz-utils fbset --no-install-recommends >> $_LOGFILE 2>&1 &
     pid=$!
     proc_wait $pid "please be patient"
     apt-get clean >> $_LOGFILE 2>&1
 
     # ** INSTALL base language pack for your language
     if [ "${_DST}" = "Ubuntu" ] ; then
-	echo "Installing language pack..."
-	apt-get ${_apt} install language-pack-$LANGUAGE-base --no-install-recommends >> $_LOGFILE 2>&1 &
-	pid=$!
-	proc_wait $pid "please wait"
-	apt-get clean >> $_LOGFILE 2>&1
+        echo "Installing language pack..."
+        apt-get ${_apt} install language-pack-$LANGUAGE-base --no-install-recommends >> $_LOGFILE 2>&1 &
+        pid=$!
+        proc_wait $pid "please wait"
+        apt-get clean >> $_LOGFILE 2>&1
     else
-	cat /etc/locale.gen | sed s/"# $LANG"/"$LANG"/g > /tmp/locale.gen
-	mv /tmp/locale.gen /etc/locale.gen
-	locale-gen >> $_LOGFILE 2>&1
+        echo "Installing language pack for not ubuntu" | tee -a $_LOGFILE
+        cat /etc/locale.gen | sed s/"# $LANG"/"$LANG"/g > /tmp/locale.gen
+        mv /tmp/locale.gen /etc/locale.gen
+        locale-gen >> $_LOGFILE 2>&1
     fi
+
 
     # ** INSTALL more usefull packages ....
     # apt-get -y install wireless-tools wpasupplicant axel build-essential git whiptail unzip
-    echo "Installing more packages..."
-    apt-get ${_apt} install nano mc htop man-db tmux dbus btrfs-tools net-tools ethtool uuid iw lshw network-manager rsync usbutils hdparm i2c-tools parted dosfstools systemd-sysv --no-install-recommends >> $_LOGFILE 2>&1 &
+    echo "Installing more packages from pkglist" | tee -a $_LOGFILE
+    apt-get ${_apt} install $(cat pkglist) --no-install-recommends >> $_LOGFILE 2>&1 &
     pid=$!
     proc_wait $pid "please wait"
     apt-get clean >> $_LOGFILE 2>&1
