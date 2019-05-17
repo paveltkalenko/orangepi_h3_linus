@@ -80,7 +80,7 @@ _format="ext2"
 # "linuxsize" is calculated from directory size       *
 # *****************************************************
 fatsize=64
-linuxsize=800
+linuxsize=1200
 
 
 # *****************************************************
