@@ -17,3 +17,5 @@ hdparm
 i2c-tools
 parted
 dosfstools
+vim
+gnupg2
