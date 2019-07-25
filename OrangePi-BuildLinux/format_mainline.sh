@@ -91,7 +91,7 @@ if [ ! "${sdcard}" = "" ]; then
     echo "Creating new filesystem on $sdcard..."
     echo -e "o\nw" | fdisk ${sdcard} > /dev/null 2>&1
     if [ $? -ne 0 ]; then
-        echo "ERROR."
+        echo "ERROR. CREATING NEW FILESYSTEM ON ${sdcard}"
         exit 0
     fi
     sync
@@ -172,8 +172,8 @@ if [ ! "${sdcard}" = "" ]; then
                 exit 1
             fi
         else
-            echo "Formating linux partition (${_format}), please wait ..."
-            mkfs -F -t ${_format} -L linux ${sdcard}2 > /dev/null 2>&1
+            echo "Formating linux partition (${_format}), parameters=_format - ${_format} sdcard = ${sdcard} please wait ..."
+            mkfs -F -t ${_format} -L linux ${sdcard}2 >> $_LOGFILE
             if [ $? -ne 0 ]; then
                 echo "ERROR formating ${_format} partition."
                 exit 1

@@ -8,7 +8,7 @@
 # Set to "yes" to create realy minimal image          *
 # *****************************************************
 ONLY_BASE="no"
-
+DOCKER_INSTALL="yes"
 
 # *****************************************************
 # Set hostname, user to be created                    *
@@ -99,7 +99,8 @@ linuxsize=3900
 # === Debian ===
 #distro="wheezy"
 #distro="jessie"
-distro="stretch"
+#distro="stretch"
+distro="buster"
 repo="http://mirror.yandex.ru/debian"
 #raspbian="no"
 

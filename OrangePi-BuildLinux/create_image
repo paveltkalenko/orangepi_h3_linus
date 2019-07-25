@@ -145,7 +145,7 @@ echo ""
 
 touch $odir/_$distro
 
-echo "DEBOOTSTRAP, FIRST STAGE"
+echo "DEBOOTSTRAP, FIRST STAGE is raspbian = ${raspbian} distro - ${distro} odir - ${odir} repo - ${repo}"
 if [ "${raspbian}" = "yes" ] ; then
   debootstrap --arch armhf --foreign --no-check-gpg --include=ca-certificates --verbose --include=wget ${distro} $odir $repo >> $_LOGFILE 2>&1 &
 else
