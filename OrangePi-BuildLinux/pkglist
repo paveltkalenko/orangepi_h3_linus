@@ -1,16 +1,12 @@
-nano
 mc
 htop
 man-db
 tmux
-dbus
 btrfs-tools
 net-tools
 ethtool
 uuid
-iw
-lshw 
-network-manager
+lshw
 rsync
 usbutils
 hdparm

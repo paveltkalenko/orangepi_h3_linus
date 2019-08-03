@@ -145,12 +145,9 @@ echo ""
 
 touch $odir/_$distro
 
-echo "DEBOOTSTRAP, FIRST STAGE is raspbian = ${raspbian} distro - ${distro} odir - ${odir} repo - ${repo}"
-if [ "${raspbian}" = "yes" ] ; then
-  debootstrap --arch armhf --foreign --no-check-gpg --include=ca-certificates --verbose --include=wget ${distro} $odir $repo >> $_LOGFILE 2>&1 &
-else
-  debootstrap --arch armhf --foreign --verbose --variant=minbase --include=wget ${distro} $odir $repo >> $_LOGFILE 2>&1 &
-fi
+
+debootstrap --arch armhf --foreign --verbose --include=wget ${distro} $odir $repo >> $_LOGFILE 2>&1 &
+
 pid=$!
 proc_wait $pid "please wait"
 if [ $_excode -ne 0 ]; then
@@ -162,25 +159,7 @@ fi
 # ** CREATE NEW sources.list:
 # ***************************
 echo "Creating \"sources.list\""
-case ${distro} in
-trusty|utopic|precise|vivid|wily|xenial*)
-cat > $odir/sources.list << _EOF_
-deb $repo/ $distro main restricted universe multiverse
-deb-src $repo/ $distro main restricted universe multiverse
-deb $repo/ $distro-updates main restricted universe multiverse
-deb-src $repo/ $distro-updates main restricted universe multiverse
-deb $repo/ $distro-security main restricted universe multiverse
-deb $repo/ $distro-backports main restricted universe multiverse
 
-_EOF_
-;;*)
-if [ "${raspbian}" = "yes" ] ; then
-cat > $odir/sources.list << _EOF_
-deb $repo/ $distro main contrib non-free
-deb-src $repo/ $distro main contrib non-free
-
-_EOF_
-else
 cat > $odir/sources.list << _EOF_
 deb $repo/ $distro main contrib non-free
 deb-src $repo/ $distro main contrib non-free
@@ -192,13 +171,6 @@ deb $repo/ $distro-backports main contrib non-free
 deb-src $repo/ $distro-backports main contrib non-free
 
 _EOF_
-fi
-;;esac
-
-#if [ ! "${ONLY_BASE}" = "yes" ] ; then
-#    echo "deb http://debian.xypron.de/ unstable/all/" >> $odir/sources.list
-#    echo "deb http://debian.xypron.de/ unstable/armhf/" >> $odir/sources.list
-#fi
 
 echo ""
 echo -e "\033[36m"

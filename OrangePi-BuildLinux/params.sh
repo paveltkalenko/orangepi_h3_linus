@@ -53,9 +53,7 @@ LANG="ru_RU.UTF-8"
 # IF _format="" partition will NOT be formated        *
 # otherwyse it will be formated with specified format *
 # *****************************************************
-image_name="orangePI"
-#image_name="minimal"
-#image_name="/dev/sdg"
+image_name="orngv2"
 
 
 # *****************************************************
@@ -102,13 +100,12 @@ linuxsize=3900
 #distro="stretch"
 distro="buster"
 repo="http://mirror.yandex.ru/debian"
-#raspbian="no"
+
 
 # === Raspbian ===
 #distro="wheezy"
 #distro="jessie"
 #repo="http://archive.raspbian.org/raspbian"
-#raspbian="yes"
 
 # ******************************************************
 # If creating the image, you can xz compress the image *

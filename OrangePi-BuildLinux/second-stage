@@ -267,11 +267,6 @@ if [ -f /etc/init.d/udev ]; then
 fi
 #---------------------------------------------------------------------
 
-if [ "${raspbian}" = "yes" ] ; then
-    wget https://archive.raspbian.org/raspbian.public.key
-    apt-key add raspbian.public.key
-fi
-
 echo "======================="
 echo "Updating & upgrading..."
 apt-get ${_apt} update >> $_LOGFILE 2>&1 &
@@ -306,71 +301,41 @@ echo ""
 echo -e "\033[31m\033[1m*** Installing $_DST $_REL ***\033[22m\033[37m"
 echo ""
 
-#apt-get ${_apt} install udev policykit-1 >> $_LOGFILE 2>&1 &
-#pid=$!
-#proc_wait $pid "please wait"
-#apt-get clean >> $_LOGFILE 2>&1
-
-#if [ "${_REL}" = "vivid" ] ; then
-#    echo "Installing upstart-sysv (vivid)..."
-#    apt-get ${_apt} install upstart-sysv >> $_LOGFILE 2>&1 &
-#    pid=$!
-#    proc_wait $pid "please wait"
-#    apt-get clean >> $_LOGFILE 2>&1
-#fi
-if [ "${distro}" = "stretch" ]
-then
-    echo "Installing systemd-sysv for Debian stretch..." | tee -a $_LOGFILE
-    apt-get ${_apt} install systemd-sysv kmod >> $_LOGFILE 2>&1 &
-    pid=$!
-    proc_wait $pid "please wait"
-    apt-get clean >> $_LOGFILE 2>&1
-fi
+echo "Update ca-certificates" | tee -a $_LOGFILE
+update-ca-certificates --fresh | tee -a $_LOGFILE
 
 echo "Installing base packages..." | tee -a $_LOGFILE
-apt-get ${_apt} install sudo isc-dhcp-client netbase ifupdown iproute network-manager --no-install-recommends >> $_LOGFILE 2>&1 &
+apt-get ${_apt} install sudo isc-dhcp-client netbase ifupdown iproute2 network-manager curl >> $_LOGFILE 2>&1 &
 pid=$!
 proc_wait $pid "please be patient"
 apt-get clean >> $_LOGFILE 2>&1
     
 if [ ! "${ONLY_BASE}" = "yes" ] ; then
     echo "Installing packages other" | tee -a $_LOGFILE
-    apt-get ${_apt} install udev apt-utils locales dialog openssh-server iputils-ping wget curl ntpdate ntp less tzdata console-common u-boot-tools initramfs-tools keyboard-configuration console-setup xz-utils fbset --no-install-recommends >> $_LOGFILE 2>&1 &
+    apt-get ${_apt} install locales dialog openssh-server ntpdate ntp console-common u-boot-tools initramfs-tools keyboard-configuration console-setup fbset --no-install-recommends >> $_LOGFILE 2>&1 &
     pid=$!
     proc_wait $pid "please be patient"
     apt-get clean >> $_LOGFILE 2>&1
 
-    # ** INSTALL base language pack for your language
-    if [ "${_DST}" = "Ubuntu" ] ; then
-        echo "Installing language pack..."
-        apt-get ${_apt} install language-pack-$LANGUAGE-base --no-install-recommends >> $_LOGFILE 2>&1 &
-        pid=$!
-        proc_wait $pid "please wait"
-        apt-get clean >> $_LOGFILE 2>&1
-    else
-        echo "Installing language pack for not ubuntu" | tee -a $_LOGFILE
-        cat /etc/locale.gen | sed s/"# $LANG"/"$LANG"/g > /tmp/locale.gen
-        mv /tmp/locale.gen /etc/locale.gen
-        locale-gen >> $_LOGFILE 2>&1
-    fi
+    echo "Installing language pack for not ubuntu" | tee -a $_LOGFILE
+    cat /etc/locale.gen | sed s/"# $LANG"/"$LANG"/g > /tmp/locale.gen
+    mv /tmp/locale.gen /etc/locale.gen
+    locale-gen >> $_LOGFILE 2>&1
 
-
-    # ** INSTALL more usefull packages ....
-    # apt-get -y install wireless-tools wpasupplicant axel build-essential git whiptail unzip
     echo "Installing more packages from pkglist" | tee -a $_LOGFILE
-    apt-get ${_apt} install $(cat pkglist) --no-install-recommends >> $_LOGFILE 2>&1 &
+    apt-get ${_apt} install $(cat pkglist) >> $_LOGFILE 2>&1 &
     pid=$!
     proc_wait $pid "please wait"
     apt-get clean >> $_LOGFILE 2>&1
 
     # ** INSTALL docker 
     if [ "${DOCKER_INSTALL}" = "yes" ] ; then
-        apt-get ${_apt} install apt-transport-https ca-certificates software-properties-common --no-install-recommends >> $_LOGFILE 2>&1 &
+        apt-get ${_apt} install apt-transport-https software-properties-common >> $_LOGFILE 2>&1 &
         pid=$!
         proc_wait $pid "please wait install docker"
         curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
         apt-key fingerprint 0EBFCD88
-        add-apt-repository "deb [arch=arm64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+        add-apt-repository "deb [arch=armhf] https://download.docker.com/linux/debian ${distro} stable" >> $_LOGFILE 2>&1
         apt-get update
         apt-get install docker-ce docker-ce-cli containerd.io
     fi
