@@ -1,23 +1,13 @@
 # Build H3 image For OrangePi
 
-The OrangePi-Kernel contains Linux kernel sources (3.4.113 and 4.9) adapted for OrangePi H3 boards
+The OrangePi-Kernel contains Linux kernel sources (4.9) adapted for OrangePi H3 boards
 
-- **make 3.4.113 uImage**
 - **make 4.9 uImage and uboot**
 - **make rootfs**
 - **make Image**
 - **how to install desktop and copy os to emmc**
 -------------------------------------
 
-- **make 3.4.113 uImage**
-
-``` shell
-cd OrangePI-Kernel                             #首先进入OrangePI-Kernel目录
-sudo ./build_linux_kernel.sh clean clean       #clean kernel
-sudo ./build_linux_kernel.sh plus              #plus为例，编译kernel，在build/下面生成uImage_OPI-PLUS
-
-#如编译plus,plus2e,plus2对应是build/uImage_OPI-PLUS，其他的型号对应build/uImage_OPI-2,编译出来的modules和firmware在build/lib下面
-```
 - **make 4.9 uImage and uboot**
 
 ``` shell

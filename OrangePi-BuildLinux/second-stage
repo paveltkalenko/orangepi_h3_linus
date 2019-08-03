@@ -302,7 +302,7 @@ echo -e "\033[31m\033[1m*** Installing $_DST $_REL ***\033[22m\033[37m"
 echo ""
 
 echo "Update ca-certificates" | tee -a $_LOGFILE
-update-ca-certificates --fresh | tee -a $_LOGFILE
+/usr/sbin/update-ca-certificates --fresh | tee -a $_LOGFILE
 
 echo "Installing base packages..." | tee -a $_LOGFILE
 apt-get ${_apt} install sudo isc-dhcp-client netbase ifupdown iproute2 network-manager curl >> $_LOGFILE 2>&1 &
@@ -326,7 +326,7 @@ if [ ! "${ONLY_BASE}" = "yes" ] ; then
     apt-get ${_apt} install $(cat pkglist) >> $_LOGFILE 2>&1 &
     pid=$!
     proc_wait $pid "please wait"
-    apt-get clean >> $_LOGFILE 2>&1
+    #apt-get clean >> $_LOGFILE 2>&1
 
     # ** INSTALL docker 
     if [ "${DOCKER_INSTALL}" = "yes" ] ; then
