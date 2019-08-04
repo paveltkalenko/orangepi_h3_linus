@@ -301,20 +301,19 @@ echo ""
 echo -e "\033[31m\033[1m*** Installing $_DST $_REL ***\033[22m\033[37m"
 echo ""
 
-echo "Update ca-certificates" | tee -a $_LOGFILE
-/usr/sbin/update-ca-certificates --fresh | tee -a $_LOGFILE
-
 echo "Installing base packages..." | tee -a $_LOGFILE
-apt-get ${_apt} install sudo isc-dhcp-client netbase ifupdown iproute2 network-manager curl >> $_LOGFILE 2>&1 &
+apt-get ${_apt} install sudo isc-dhcp-client netbase ifupdown iproute2 network-manager curl ca-certificates >> $_LOGFILE 2>&1 &
 pid=$!
 proc_wait $pid "please be patient"
 apt-get clean >> $_LOGFILE 2>&1
     
+
+
 if [ ! "${ONLY_BASE}" = "yes" ] ; then
     echo "Installing packages other" | tee -a $_LOGFILE
     apt-get ${_apt} install locales dialog openssh-server ntpdate ntp console-common u-boot-tools initramfs-tools keyboard-configuration console-setup fbset --no-install-recommends >> $_LOGFILE 2>&1 &
     pid=$!
-    proc_wait $pid "please be patient"
+    proc_wait $pid "please be patient installing other packages"
     apt-get clean >> $_LOGFILE 2>&1
 
     echo "Installing language pack for not ubuntu" | tee -a $_LOGFILE
@@ -326,18 +325,26 @@ if [ ! "${ONLY_BASE}" = "yes" ] ; then
     apt-get ${_apt} install $(cat pkglist) >> $_LOGFILE 2>&1 &
     pid=$!
     proc_wait $pid "please wait"
-    #apt-get clean >> $_LOGFILE 2>&1
+    apt-get clean | tee -a $_LOGFILE 
 
     # ** INSTALL docker 
     if [ "${DOCKER_INSTALL}" = "yes" ] ; then
         apt-get ${_apt} install apt-transport-https software-properties-common >> $_LOGFILE 2>&1 &
         pid=$!
         proc_wait $pid "please wait install docker"
+        echo "running bash"
+        /bin/bash
+        echo "Update ca-certificates" | tee -a $_LOGFILE
+        /usr/sbin/update-ca-certificates --fresh | tee -a $_LOGFILE
+        echo "PATH = $PATH" | tee -a $_LOGFILE
+        echo "test curl" | tee -a $_LOGFILE
+        curl -fsSL https://download.docker.com/linux/debian/gpg | tee -a $_LOGFILE
+        echo "Add CURL"
         curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
         apt-key fingerprint 0EBFCD88
-        add-apt-repository "deb [arch=armhf] https://download.docker.com/linux/debian ${distro} stable" >> $_LOGFILE 2>&1
-        apt-get update
-        apt-get install docker-ce docker-ce-cli containerd.io
+        add-apt-repository "deb [arch=armhf] https://download.docker.com/linux/debian ${distro} stable" | tee -a $_LOGFILE 
+        apt-get update | tee -a $_LOGFILE 
+        apt-get install docker-ce docker-ce-cli containerd.io | tee -a $_LOGFILE 
     fi
 
 fi

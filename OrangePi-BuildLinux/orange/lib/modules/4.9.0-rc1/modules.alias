@@ -309,4 +309,8 @@ alias of:N*T*Callwinner,sun8i-h3-i2sC* snd_soc_sun8i_i2s
 alias of:N*T*Callwinner,sun8i-h3-i2s snd_soc_sun8i_i2s
 alias of:N*T*Callwinner,sun8i-a83t-i2sC* snd_soc_sun8i_i2s
 alias of:N*T*Callwinner,sun8i-a83t-i2s snd_soc_sun8i_i2s
+alias ip6t_ecn xt_ecn
+alias ipt_ecn xt_ecn
+alias ip6t_hl xt_hl
+alias ipt_ttl xt_hl
 alias platform:rfkill-regulator rfkill_regulator
